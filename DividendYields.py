@@ -7,7 +7,7 @@ Created on Mon May 18 12:37:55 2020
 
 import bs4
 import requests
-from bs4 import BeautifulSoup
+
 
 # Main function to compute total dividend yield
 def main():
