@@ -1,7 +1,9 @@
 
 import os
 import json
+# import requests, BS4, and lxml
 
+# Obtain  response from user
 def yn():
     while True:
         ans = input()
@@ -12,21 +14,29 @@ def yn():
         else:
             print("Please answer with yes or no.")
 
-
+# Guides user to login with previously saved profile or create new one
 def login():
+    # Lists profiles in folder
     entries = os.listdir()
+    # Checks if user is new or has profile
     print("Are you a returning user?")
     check = yn()
+    # Requests users name to find profile or to create new one
     name = input("What is your name? ")
+    # Formats name to later create it in proper format
     name_form = name.lower().replace(" ","")+".json"
+
+    # Checks to make sure profile does not already exist
     if check is False and name_form in entries:
         print("Your portfolio already exists! Please try again.")
         quit()
+    # Asks if user would like to make a new profile, otherwise ends program
     elif check is False:
         print("Would you like to create a new portfolio? ")
         ans = yn()
         if ans is False:
             quit()
+        # Creates user profile with name formatted as .json file and initializes and empty dictionary
         else:
             print("A new portfolio has been created called {}".format(name_form))
             file = open(name_form,'w')
@@ -34,10 +44,12 @@ def login():
             json.dump(dic,file)
             file.close()
             return name_form
+    # If user is returning
     else:
         if name_form in entries:
             print("Welcome back {}!".format(name))
             return name_form
+        # If user enters profile that does not exist asks to create new one, otherwise kill program and show files
         else:
             print("Sorry, your portfolio is not in the files. Would you like to create a new portfolio? ")
             ans = yn()
@@ -48,15 +60,29 @@ def login():
                 file.close()
                 return name_form
             else:
+                print("These are the profiles that are already created: ")
+                print(entries)
                 quit()
 
 def data_entry():
+    # Calls login script to obtain file name
     file_name = login()
 
+    # Loads file into variable
     file = open(file_name, 'r')
     portf = json.load(file)
     file.close()
 
+    # Allows user to see stocks in portfolio
+    print("Would you like to view your portfolio?")
+    ans = yn()
+    if ans is True:
+        for key in portf:
+            print("{} : {}".format(key, portf[key]))
+    else:
+        pass
+
+    # Allows user to make changes to their portfolio
     print("Would you like to edit your portfolio? ")
     ans = yn()
     if ans is True:
@@ -82,8 +108,9 @@ def data_entry():
         return portf
 
 def add_stock(portf):
+    # Allows user to add stocks and quantities to portfolio
     while True:
-        stock = input("What is the name of the stock (shortened version)? Type done when you are finished. ")
+        stock = (input("What is the name of the stock (shortened version)? Type done when you are finished. ")).upper()
         if stock.lower() == "done":
             return portf
         elif stock.lower() in portf:
@@ -101,6 +128,7 @@ def add_stock(portf):
         portf[stock] = shares
 
 def remove_stock(portf):
+    # Allows user to remove stocks
     while True:
         remove = input("Please enter the stock you would like to remove. Type done when you are finished. ")
         if remove.lower() == 'done':
@@ -112,6 +140,7 @@ def remove_stock(portf):
             pass
 
 def change_stock(portf):
+    # Allows user to adjust stock shares
     while True:
         change = input("Please enter the stock you would like to change. Type done when you are finished. ")
         if change.lower() == 'done':
@@ -132,12 +161,21 @@ def change_stock(portf):
 
 def data_prep():
     portf = data_entry()
-    print(portf)
-    print(portf[0])
+    stocks = []
+    quantity = []
+    for stock in portf:
+        stocks.append(stock)
+        quantity.append(portf[stock])
+    print(stocks)
+    print(quantity)
 
-class Stocks:
-    def __init__(self,stock,shares,price,dividend):
-        self.stock() = stock
+# Access stocks
+def access():
+
+
+#class Stocks:
+    #def __init__(self,stock,shares,price,dividend):
+        #self.stock() = stock
 
 
 data_prep()
