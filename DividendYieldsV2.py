@@ -1,7 +1,8 @@
 
 import os
 import json
-# import requests, BS4, and lxml
+import requests
+import bs4
 
 # Obtain  response from user
 def yn():
@@ -78,7 +79,9 @@ def data_entry():
     ans = yn()
     if ans is True:
         for key in portf:
-            print("{} : {}".format(key, portf[key]))
+            print("{}:{}".format(key, portf[key]))
+        if len(portf) == 0:
+            print("Your portfolio is empty!")
     else:
         pass
 
@@ -102,10 +105,11 @@ def data_entry():
         ans = yn()
         if ans is True:
             portf = change_stock(portf)
+            return portf, file_name
         else:
-            return portf
+            return portf, file_name
     else:
-        return portf
+        return portf, file_name
 
 def add_stock(portf):
     # Allows user to add stocks and quantities to portfolio
@@ -133,7 +137,7 @@ def remove_stock(portf):
         remove = input("Please enter the stock you would like to remove. Type done when you are finished. ")
         if remove.lower() == 'done':
             return portf
-        elif remove in portf:
+        elif remove.upper() in portf:
             del portf[remove]
         else:
             print("{} is not a part of your portfolio! ".format(remove))
@@ -159,23 +163,66 @@ def change_stock(portf):
                     pass
             portf[change] = shares
 
-def data_prep():
-    portf = data_entry()
-    stocks = []
-    quantity = []
-    for stock in portf:
-        stocks.append(stock)
-        quantity.append(portf[stock])
-    print(stocks)
-    print(quantity)
-
 # Access stocks
 def access():
+    portfname = data_entry()
+    portf = portfname[0]
+    file_name = portfname[1]
+
+    dividends = 0
+    value = 0
+    for stock, shares in portf.items():
+        link = 'https://robinhood.com/stocks/'+stock
+        r = requests.get(link)
+        soup = bs4.BeautifulSoup(r.text, "lxml")
+
+        price = soup.find('div',{'class':'QzVHcLdwl2CEuEMpTUFaj'}).text
+        price = price[1:]
+        print('{} Price: ${}'.format(stock,price))
 
 
-#class Stocks:
-    #def __init__(self,stock,shares,price,dividend):
-        #self.stock() = stock
+        div = soup.find_all('div', {'class': '_2SYphfY1DF71e5bReqgDyP'})[2].text
+        div = div[14:]
+        try:
+            float(div)
+        except:
+            div = soup.find_all('div', {'class': '_2SYphfY1DF71e5bReqgDyP'})[6].text
+            div = div[14:]
+        try:
+            float(div)
+        except:
+            div = 0
+        if div == 0:
+            print('{} Div: N/A'.format(stock))
+        else:
+            print('{} Div: {}%'.format(stock,div))
+
+        info = Stocks(stock, shares, price, div)
+        dividends += info.dividends()
+        value += info.value()
+
+    print("Your total yearly dividends is ${:.2f}".format(dividends))
+    print("Your total portfolio is worth ${:.2f}".format(value))
+
+    file = open(file_name, 'w+')
+    json.dump(portf, file)
+    file.close()
+
+class Stocks:
+    def __init__(self,stock,shares,price,div):
+        self.stock = stock
+        self.shares = float(shares)
+        self.price = float(price)
+        self.div= float(div)
+
+    def dividends(self):
+        dividend = self.div*self.price*self.shares/100
+        return dividend
+
+    def value(self):
+        value = self.shares*self.price
+        return value
 
 
-data_prep()
+
+access()
