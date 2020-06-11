@@ -223,6 +223,6 @@ class Stocks:
         value = self.shares*self.price
         return value
 
-
+gg
 
 access()

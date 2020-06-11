@@ -179,7 +179,8 @@ def DivKO():
 def PriceQQQ():
     r = requests.get('https://finance.yahoo.com/quote/QQQ?p=QQQ&.tsrc=fin-srch')
     soup = bs4.BeautifulSoup(r.text,"lxml")
-    price = soup.find_all('div',{'class': 'My(6px) Pos(r) smartphone_Mt(6px)'})[0].find('span').text
+    price = soup.find_all('div',{'class': 'grid-4 _1-LuWSzn-erBDKvIM2uiMO'})[11].text
+    price = price[1::]
     print('QQQ Price: {}$'.format(price))
     return price
       
@@ -187,7 +188,7 @@ def PriceQQQ():
 def DivQQQ():
     r = requests.get('https://robinhood.com/stocks/qqq')
     soup = bs4.BeautifulSoup(r.text,"lxml")
-    div = soup.find_all('div',{'class':'_1o4PJLud46X1hGKRyPgyLI'})[2].text
+    div = soup.find_all('div',{'class': 'grid-4 _1-LuWSzn-erBDKvIM2uiMO'})[7].text
     div = div[0:4]
     try:
         float(div)
