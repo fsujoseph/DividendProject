@@ -1,4 +1,4 @@
-To run the project make sure you have the followint installed:
+To run the project make sure you have the following installed:
 1. Beautiful Soup
 2. Requests
 3. Json
