@@ -138,7 +138,7 @@ def remove_stock(portf):
         if remove.lower() == 'done':
             return portf
         elif remove.upper() in portf:
-            del portf[remove]
+            del portf[remove.upper()]
         else:
             print("{} is not a part of your portfolio! ".format(remove))
             pass
@@ -149,10 +149,10 @@ def change_stock(portf):
         change = input("Please enter the stock you would like to change. Type done when you are finished. ")
         if change.lower() == 'done':
             return portf
-        elif change not in portf:
+        elif change.upper() not in portf:
             print("{} is not a part of your portfolio! ".format(change))
             pass
-        elif change in portf:
+        elif change.upper() in portf:
             while True:
                 shares = input("How many shares of {} do you own? ".format(change))
                 try:
@@ -161,7 +161,7 @@ def change_stock(portf):
                 except ValueError:
                     print("Please enter an integer. ")
                     pass
-            portf[change] = shares
+            portf[change.upper()] = shares
 
 # Access stocks
 def access():
@@ -192,10 +192,10 @@ def access():
             float(div)
         except:
             div = 0
-        if div == 0:
-            print('{} Div: N/A'.format(stock))
-        else:
-            print('{} Div: {}%'.format(stock,div))
+        # if div == 0:
+        #     print('{} Div: N/A'.format(stock))
+        # else:
+        #     print('{} Div: {}%'.format(stock,div))
 
         info = Stocks(stock, shares, price, div)
         dividends += info.dividends()
@@ -223,6 +223,6 @@ class Stocks:
         value = self.shares*self.price
         return value
 
-gg
+
 
 access()
