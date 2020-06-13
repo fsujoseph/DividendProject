@@ -1,4 +1,13 @@
-To run the project make sure you have Beautiful Soup installed and requests installed. This video will help:
-https://www.youtube.com/watch?v=cGW70Hc0W4M
+To run the project make sure you have the followint installed:
+1. Beautiful Soup
+2. Requests
+3. Json
+4. lxml
+5. OS
 
-If the project is run in PyCharm you can use the imports already written in the script. However be sure to add the lxml plugin!
+If using PyCharm all of these can be easily installed as packages. Once you do that the imports in the script will take care of everything.
+Note: OS comes with Python and doesn't have to be installed as a package.
+
+
+This video will help install Beautiful Soup and Requests if not using PyCharm.
+https://www.youtube.com/watch?v=cGW70Hc0W4M
