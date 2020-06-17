@@ -1,4 +1,3 @@
-
 import os
 import json
 import requests
@@ -180,22 +179,23 @@ def access():
         price = price[1:]
         print('{} Price: ${}'.format(stock,price))
 
-
-        div = soup.find_all('div', {'class': '_2SYphfY1DF71e5bReqgDyP'})[2].text
+        div = soup.find_all('div', {'class': '_2SYphfY1DF71e5bReqgDyP'})[6].text
         div = div[14:]
+
         try:
-            float(div)
+            test = soup.find_all('div', {'class': '_2SYphfY1DF71e5bReqgDyP'})[10].text
         except:
-            div = soup.find_all('div', {'class': '_2SYphfY1DF71e5bReqgDyP'})[6].text
+            div = soup.find_all('div', {'class': '_2SYphfY1DF71e5bReqgDyP'})[2].text
             div = div[14:]
         try:
             float(div)
         except:
             div = 0
-        # if div == 0:
-        #     print('{} Div: N/A'.format(stock))
-        # else:
-        #     print('{} Div: {}%'.format(stock,div))
+
+        if div == 0:
+            print('{} Div: N/A'.format(stock))
+        else:
+            print('{} Div: {}%'.format(stock,div))
 
         info = Stocks(stock, shares, price, div)
         dividends += info.dividends()
