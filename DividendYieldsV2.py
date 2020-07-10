@@ -8,6 +8,7 @@ import os
 import json
 import requests
 import bs4
+import lxml
 
 
 def yn():   # Obtain yes/no response from user
