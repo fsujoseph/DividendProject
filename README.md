@@ -5,8 +5,7 @@ To run the project make sure you have the following installed:
 4. lxml
 5. OS
 
-If using PyCharm all of these can be easily installed as packages. Once you do that the imports in the script will take care of everything.
-Note: OS comes with Python and doesn't have to be installed as a package.
+If using PyCharm, the script will load all of these with the imports.
 
 
 This video will help install Beautiful Soup and Requests if not using PyCharm.
