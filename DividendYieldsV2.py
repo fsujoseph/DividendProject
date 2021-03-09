@@ -8,7 +8,6 @@ import os
 import json
 import requests
 import bs4
-import lxml
 
 
 def yn():   # Obtain yes/no response from user
@@ -26,12 +25,9 @@ def login():
     """
     This function creates or loads in a user's stock portfolio as a .json file.
     """
-    entries = os.listdir()  # Lists profiles in folder
-
-    # Checks if user is new or has profile
-    print("Are you a returning user?")
+    entries = os.listdir()                  # Lists profiles in folder
+    print("Are you a returning user?")      # Checks if user is new or has profile
     check = yn()
-
     name = input("What is your name? ")     # Requests user's name to find profile or to create new one
     name_formatted = name.lower().replace(" ", "")+".json"   # Formats name to later be opened and edited
 
@@ -42,8 +38,7 @@ def login():
         access()
     elif check is False:    # Asks if user would like to make a new profile, otherwise ends program
         print("Would you like to create a new portfolio? ")
-        ans = yn()
-        if ans is False:
+        if yn() is False:
             quit()
         else:   # Creates user profile with name formatted as .json file
             print("A new portfolio has been created called {}".format(name_formatted))
@@ -58,8 +53,7 @@ def login():
             return name_formatted
         else:   # If user enters profile that does not exist asks to create new one, otherwise kill program
             print("Sorry, your portfolio is not in the files. Would you like to create a new portfolio? ")
-            ans = yn()
-            if ans is True:
+            if yn() is True:
                 file = open(name_formatted, 'w')
                 dic = {}
                 json.dump(dic, file)
@@ -76,27 +70,21 @@ def data_entry():
     This function allows the user to first view their profile. Then it contains options to add, remove, or change
     the stock holdings.
     """
-    file_name = login()     # Calls login script to obtain file name
-
+    file_name = login()             # Calls login script to obtain file name
     file = open(file_name, 'r')
     portfolio = json.load(file)     # Loads file into variable
     file.close()
 
-    # Allows user to see stocks in portfolio
     print("Would you like to view your portfolio?")
-    ans = yn()
-    if ans is True:
-        for key in portfolio:
-            print("{}:{}".format(key, portfolio[key]))
+    if yn():                 # Allows user to see stocks in portfolio
+        for key, value in portfolio.items():
+            print("{}:{}".format(key, value))
         if len(portfolio) == 0:
             print("Your portfolio is empty!")
-    else:
-        pass
 
     # Allows user to make changes to their portfolio
     print("Would you like to edit your portfolio? ")
-    ans = yn()
-    if ans is True:
+    if yn():
         print("Would you like to add stocks? ")
         ans = yn()
         if ans is True:
@@ -182,8 +170,7 @@ def access():
     portfolio = portfolio_and_file_name[0]
     file_name = portfolio_and_file_name[1]
 
-    dividends = 0
-    value = 0
+    dividends, value = 0, 0
     for stock, shares in portfolio.items():
         link = 'https://robinhood.com/stocks/'+stock    # Creates link to Robinhood specific to stock name
         r = requests.get(link)
@@ -195,10 +182,8 @@ def access():
         price = soup.find('div', {'class': 'QzVHcLdwl2CEuEMpTUFaj'}).text
         price = price[1:]
         print('{} Price: ${}'.format(stock, price))
-
         div = soup.find_all('div', {'class': '_2SYphfY1DF71e5bReqgDyP'})[6].text
         div = div[14:]
-
         try:
             test = soup.find_all('div', {'class': '_2SYphfY1DF71e5bReqgDyP'})[10].text
         except:
@@ -208,18 +193,15 @@ def access():
             float(div)
         except:
             div = 0
-
         if div == 0:
             print('{} Div: N/A'.format(stock))
         else:
             print('{} Div: {}%'.format(stock, div))
-
         price = price.replace(',', '')   # If the stock price is over 4 figures
-
         # Rung through stocks class within this for loop to get the dividends and share values
-        info = Stocks(stock, shares, price, div)
-        dividends += info.dividends()
-        value += info.value()
+        div_value = divs_and_value(float(div), float(price), float(shares))
+        dividends += div_value[0]
+        value += div_value[1]
 
     print("Your total yearly dividends is ${:.2f}".format(dividends))
     print("Your total portfolio is worth ${:.2f}".format(value))
@@ -230,23 +212,11 @@ def access():
     file.close()
 
 
-class Stocks:
-    """
-    This class contains methods to return the dividend and share value
-    """
-    def __init__(self, stock, shares, price, div):
-        self.stock = stock
-        self.shares = float(shares)
-        self.price = float(price)
-        self.div = float(div)
-
-    def dividends(self):
-        dividend = self.div*self.price*self.shares/100
-        return dividend
-
-    def value(self):
-        value = self.shares*self.price
-        return value
+def divs_and_value(div, price, shares):
+    dividend = div * price * shares / 100
+    value = shares * price
+    return dividend, value
 
 
-access()
+if __name__ == "__main__":
+    access()
