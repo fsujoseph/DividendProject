@@ -1,5 +1,4 @@
 # Dividend Project
-
 ## Program Description
 
 This is a nifty tool I created once I developed an interest in the stock market. It uses the Beautiful Soup package to scrape the live stock price data from RobinHood, and then it scrapes the companies historical dividend payout to estimate your yearly dividend totals. The program prompts the user to enter their stock holdings and quantities and then saves it so it can easily be revisited without having to re-enter it every time.
